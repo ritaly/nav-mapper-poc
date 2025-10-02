@@ -17,7 +17,7 @@ async function renderNavigation(env: Env, site: "main" | "shop") {
     const baseUrl = site === "main" ? envDomains[env].main : envDomains[env].shop;
     const currentHostname = new URL(baseUrl).hostname;
 
-    currentContext.textContent = `You are on: 🔗 ${baseUrl}`;
+    currentContext.textContent = `You are on: 🔴 🔗 ${baseUrl}`;
 
     // if (!Array.isArray(cmsNavigation.items)) {
     //   console.error("Invalid CMS navigation JSON:", cmsNavigation);
