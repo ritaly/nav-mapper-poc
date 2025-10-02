@@ -5,6 +5,7 @@ type NavItem = { label: string; href: string };
 const environmentSelector = document.getElementById("env-select") as HTMLSelectElement;
 const siteSelector = document.getElementById("site-select") as HTMLSelectElement;
 const navigationTableBody = document.getElementById("nav") as HTMLTableSectionElement;
+const currentContext = document.getElementById("current-context") as HTMLParagraphElement;
 
 async function renderNavigation(env: Env, site: "main" | "shop") {
   navigationTableBody.innerHTML = "";
@@ -13,10 +14,11 @@ async function renderNavigation(env: Env, site: "main" | "shop") {
     const envDomains: EnvDomains = await fetch("/env-domains.json").then(r => r.json());
     const cmsNavigation = await fetch("/fake-cms-nav.json").then(r => r.json());
 
-    const currentHostname =
-      site === "main"
-        ? new URL(envDomains[env].main).hostname
-        : new URL(envDomains[env].shop).hostname;
+    const baseUrl = site === "main" ? envDomains[env].main : envDomains[env].shop;
+    const currentHostname = new URL(baseUrl).hostname;
+
+    // update context text
+    currentContext.textContent = `You are on: ${baseUrl}`;
 
     if (!Array.isArray(cmsNavigation.items)) {
       console.error("Invalid CMS navigation JSON:", cmsNavigation);
@@ -40,7 +42,6 @@ async function renderNavigation(env: Env, site: "main" | "shop") {
   }
 }
 
-// fake environment + site switch
 function refresh() {
   renderNavigation(environmentSelector.value as Env, siteSelector.value as "main" | "shop");
 }

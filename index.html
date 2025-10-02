@@ -31,6 +31,13 @@
 <body>
   <h2>Navigation Mapper — Proof of Concept</h2>
 
+  <label for="site-select"><strong>Choose starting point site:</strong></label>
+  <select id="site-select">
+    <option value="main">Main</option>
+    <option value="shop">Shop</option>
+  </select>
+
+
   <label for="env-select"><strong>Choose environment:</strong></label>
   <select id="env-select">
     <option value="prod">Prod</option>
@@ -40,12 +47,11 @@
     <option value="review">Review</option>
   </select>
 
-  <label for="site-select"><strong>Choose site:</strong></label>
-  <select id="site-select">
-    <option value="main">Main</option>
-    <option value="shop">Shop</option>
-  </select>
 
+  <p id="current-context"><em>Select environment and site...</em></p>
+
+
+  
   <table>
     <thead>
       <tr>
