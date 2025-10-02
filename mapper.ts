@@ -1,5 +1,5 @@
 export type Env = "prod" | "stg" | "dev" | "draft" | "review";
-export type SiteType = "MAIN" | "SHOP" | "EXTERNAL" | "RELATIVE";
+export type LinkSiteType = "MAIN" | "SHOP" | "EXTERNAL" | "RELATIVE";
 export type EnvDomains = Record<Env, { main: string; shop: string }>;
 
 export function mapNavLinkToEnvUrl(
@@ -18,7 +18,7 @@ export function mapNavLinkToEnvUrl(
   return normalizeSelfNav(resolvedUrl, currentHostname);
 }
 
-function detectSiteType(navLink: string): SiteType {
+function detectSiteType(navLink: string): LinkSiteType {
   try {
     const hostname = new URL(navLink).hostname.toLowerCase();
 
@@ -30,7 +30,7 @@ function detectSiteType(navLink: string): SiteType {
   }
 }
 
-function resolveBaseUrlForEnv(envDomains: EnvDomains, env: Env, siteType: SiteType): string {
+function resolveBaseUrlForEnv(envDomains: EnvDomains, env: Env, siteType: LinkSiteType): string {
   if (siteType === "MAIN") return envDomains[env].main;
   if (siteType === "SHOP") return envDomains[env].shop;
   throw new Error(`Unsupported siteType ${siteType}`);
