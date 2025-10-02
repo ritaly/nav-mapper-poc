@@ -1,32 +1,45 @@
-import { resolveNavHref, Env } from "./mapper.js";
+import { mapNavLinkToEnvUrl, Env, EnvDomains } from "./mapper.js";
 
-const envSelect = document.getElementById("env-select") as HTMLSelectElement;
-const navContainer = document.getElementById("nav") as HTMLTableSectionElement;
+type NavItem = { label: string; href: string };
 
-async function renderNav(env: Env) {
-  navContainer.innerHTML = "";
+const envSelector = document.getElementById("env-select") as HTMLSelectElement;
+const navPreviewTable = document.getElementById("nav") as HTMLTableSectionElement;
 
-  const domains = await fetch("/env-domains.json").then(r => r.json());
-  const cmsNav = await fetch("/fake-cms-nav.json").then(r => r.json());
+async function renderNavigation(env: Env) {
+  navPreviewTable.innerHTML = "";
 
-  const currentHost = new URL(domains[env].main).hostname;
+  try {
+    const envDomains: EnvDomains = await fetch("/env-domains.json").then(r => r.json());
+    const cmsNav = await fetch("/fake-cms-nav.json").then(r => r.json());
 
-  cmsNav.items.forEach((link: any) => {
-    const mapped = resolveNavHref(link.href, domains, env, currentHost);
+    const currentHost = new URL(envDomains[env].main).hostname;
 
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${link.label}</td>
-      <td><code>${link.href}</code></td>
-      <td>${env}</td>
-      <td><code>${mapped}</code></td>
-    `;
-    navContainer.appendChild(tr);
-  });
+    // if (!Array.isArray(cmsNav.items)) {
+    //   console.error("Invalid nav JSON:", cmsNav);
+    //   return;
+    // }
+
+    cmsNav.items.forEach((navItem: NavItem) => {
+      const resolvedUrl = mapNavLinkToEnvUrl(navItem.href, envDomains, env, currentHost);
+
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${navItem.label}</td>
+        <td><code>${navItem.href}</code></td>
+        <td>${env}</td>
+        <td><code>${resolvedUrl}</code></td>
+      `;
+      navPreviewTable.appendChild(row);
+    });
+  } catch (err) {
+    console.error("Failed to render navigation:", err);
+  }
 }
 
-envSelect.addEventListener("change", () => {
-  renderNav(envSelect.value as Env);
+// fake environment switch
+envSelector.addEventListener("change", () => {
+  renderNavigation(envSelector.value as Env);
 });
 
-renderNav("prod");
+// default
+renderNavigation("prod");

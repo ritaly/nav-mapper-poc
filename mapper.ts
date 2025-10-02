@@ -1,54 +1,44 @@
 export type Env = "prod" | "stg" | "dev" | "draft" | "review";
 export type SiteType = "MAIN" | "SHOP" | "EXTERNAL" | "RELATIVE";
+export type EnvDomains = Record<Env, { main: string; shop: string }>;
 
-export function classifySite(urlFromCms: string): SiteType {
+export function mapNavLinkToEnvUrl(
+  navLink: string,
+  envDomains: EnvDomains,
+  env: Env,
+  currentHostname: string
+): string {
+  const siteType = detectSiteType(navLink);
+
+  if (siteType === "EXTERNAL" || siteType === "RELATIVE") return navLink;
+
+  const parsedUrl = new URL(navLink);
+  const targetBaseUrl = resolveBaseUrlForEnv(envDomains, env, siteType);
+  const resolvedUrl = `${targetBaseUrl}${parsedUrl.pathname}${parsedUrl.search}${parsedUrl.hash}`;
+  return normalizeSelfNav(resolvedUrl, currentHostname);
+}
+
+function detectSiteType(navLink: string): SiteType {
   try {
-    const u = new URL(urlFromCms);
-    const host = u.hostname.toLowerCase();
+    const hostname = new URL(navLink).hostname.toLowerCase();
 
-    if (host === "example.com" || host.endsWith(".example.com")) {
-      if (host.startsWith("shop.")) return "SHOP";
-      return "MAIN";
-    }
+    if (hostname.startsWith("shop.")) return "SHOP";
+    if (hostname === "example.com" || hostname.endsWith(".example.com")) return "MAIN";
     return "EXTERNAL";
   } catch {
     return "RELATIVE";
   }
 }
 
-function mapHostForSite(domains: any, env: Env, site: SiteType): string | null {
-  if (site === "MAIN") return domains[env].main;
-  if (site === "SHOP") return domains[env].shop || null;
-  return null;
+function resolveBaseUrlForEnv(envDomains: EnvDomains, env: Env, siteType: SiteType): string {
+  if (siteType === "MAIN") return envDomains[env].main;
+  if (siteType === "SHOP") return envDomains[env].shop;
+  throw new Error(`Unsupported siteType ${siteType}`);
 }
 
-function normalizeSelfLink(resolvedUrl: string, currentHost: string): string {
-  try {
-    const u = new URL(resolvedUrl);
-    if (u.hostname === currentHost) {
-      return `${u.pathname}${u.search}${u.hash}`;
-    }
-    return resolvedUrl;
-  } catch {
-    return resolvedUrl;
-  }
-}
-
-export function resolveNavHref(
-  cmsHref: string,
-  domains: any,
-  env: Env,
-  currentHost: string
-): string | null {
-  const site = classifySite(cmsHref);
-
-  if (site === "EXTERNAL") return cmsHref;
-  if (site === "RELATIVE") return cmsHref;
-
-  const src = new URL(cmsHref);
-  const targetOrigin = mapHostForSite(domains, env, site);
-  if (!targetOrigin) return null;
-
-  const candidate = `${targetOrigin}${src.pathname}${src.search}${src.hash}`;
-  return normalizeSelfLink(candidate, currentHost);
+function normalizeSelfNav(resolvedUrl: string, currentHostname: string): string {
+  const parsedUrl = new URL(resolvedUrl);
+  return parsedUrl.hostname === currentHostname
+    ? `${parsedUrl.pathname}${parsedUrl.search}${parsedUrl.hash}`
+    : resolvedUrl;
 }
