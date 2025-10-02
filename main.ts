@@ -18,12 +18,12 @@ async function renderNavigation(env: Env, site: "main" | "shop") {
     const currentHostname = new URL(baseUrl).hostname;
 
     // update context text
-    currentContext.textContent = `You are on: ${baseUrl}`;
+    currentContext.textContent = `You are on: 🔗 <code>${baseUrl}</code>`;
 
-    if (!Array.isArray(cmsNavigation.items)) {
-      console.error("Invalid CMS navigation JSON:", cmsNavigation);
-      return;
-    }
+    // if (!Array.isArray(cmsNavigation.items)) {
+    //   console.error("Invalid CMS navigation JSON:", cmsNavigation);
+    //   return;
+    // }
 
     cmsNavigation.items.forEach((navItem: NavItem) => {
       const resolvedUrl = mapNavLinkToEnvUrl(navItem.href, envDomains, env, currentHostname);
@@ -32,7 +32,6 @@ async function renderNavigation(env: Env, site: "main" | "shop") {
       row.innerHTML = `
         <td>${navItem.label}</td>
         <td><code>${navItem.href}</code></td>
-        <td>${env} / ${site}</td>
         <td><code>${resolvedUrl}</code></td>
       `;
       navigationTableBody.appendChild(row);
