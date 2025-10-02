@@ -1,0 +1,23 @@
+[build]
+  command = "npx tsc"
+  publish = "."
+
+# Default branch = main (prod)
+[context.main]
+  command = "npx tsc"
+
+# Staging branch
+[context.stg]
+  command = "npx tsc"
+
+# Dev branch
+[context.dev]
+  command = "npx tsc"
+
+# Draft branch
+[context.draft]
+  command = "npx tsc"
+
+# Review branch
+[context.review]
+  command = "npx tsc"
