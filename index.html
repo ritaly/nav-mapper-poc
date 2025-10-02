@@ -40,12 +40,18 @@
     <option value="review">Review</option>
   </select>
 
+  <label for="site-select"><strong>Choose site:</strong></label>
+  <select id="site-select">
+    <option value="main">Main</option>
+    <option value="shop">Shop</option>
+  </select>
+
   <table>
     <thead>
       <tr>
         <th>Label</th>
         <th>CMS link (input)</th>
-        <th>Env</th>
+        <th>Env / Site</th>
         <th>Resolved link (output)</th>
       </tr>
     </thead>
@@ -53,6 +59,6 @@
   </table>
 
   <!-- compiled JS from TypeScript -->
-  <script type="module" src="./dist/main.js"></script>
+  <script type="module" src="dist/main.js"></script>
 </body>
 </html>
