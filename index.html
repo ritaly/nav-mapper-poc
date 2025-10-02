@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Navigation Mapper PoC</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    table {
+      border-collapse: collapse;
+      margin-top: 20px;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px 12px;
+      text-align: left;
+    }
+    th {
+      background: #f5f5f5;
+    }
+    code {
+      background: #f0f0f0;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Navigation Mapper — Proof of Concept</h2>
+
+  <label for="env-select"><strong>Choose environment:</strong></label>
+  <select id="env-select">
+    <option value="prod">Prod</option>
+    <option value="stg">Staging</option>
+    <option value="dev">Dev</option>
+    <option value="draft">Draft</option>
+    <option value="review">Review</option>
+  </select>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Label</th>
+        <th>CMS link (input)</th>
+        <th>Env</th>
+        <th>Resolved link (output)</th>
+      </tr>
+    </thead>
+    <tbody id="nav"></tbody>
+  </table>
+
+  <!-- compiled JS from TypeScript -->
+  <script type="module" src="./dist/main.js"></script>
+</body>
+</html>

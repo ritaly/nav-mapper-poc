@@ -1,0 +1,10 @@
+{
+  "items": [
+    { "label": "About", "href": "https://example.com/about" },
+    { "label": "Articles", "href": "https://example.com/articles" },
+    { "label": "Wishlist", "href": "https://shop.example.com/wishlist" },
+    { "label": "Cart", "href": "https://shop.example.com/cart" },
+    { "label": "Partner", "href": "https://partnerspage.com/promo" },
+    { "label": "RelativeExample", "href": "/local-path" }
+  ]
+}

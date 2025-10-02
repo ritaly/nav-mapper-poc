@@ -1,0 +1,7 @@
+{
+    "prod": { "main": "https://example.com", "shop": "https://shop.example.com" },
+    "stg": { "main": "https://stg.example.com", "shop": "https://shop-stg.example.com" },
+    "dev": { "main": "https://dev.example.com", "shop": "https://shop-stg.example.com" },
+    "draft": { "main": "https://draft.example.com", "shop": "https://shop-stg.example.com" },
+    "review": { "main": "https://review.example.com", "shop": "https://shop-stg.example.com" }
+}
