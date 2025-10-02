@@ -1,8 +1,5 @@
-import * as domains from "./env-domains.json";
-
-export type Env = keyof typeof domains;
+export type Env = "prod" | "stg" | "dev" | "draft" | "review";
 export type SiteType = "MAIN" | "SHOP" | "EXTERNAL" | "RELATIVE";
-
 
 export function classifySite(urlFromCms: string): SiteType {
   try {
@@ -15,18 +12,16 @@ export function classifySite(urlFromCms: string): SiteType {
     }
     return "EXTERNAL";
   } catch {
-    return "RELATIVE"; // e.g. "/about"
+    return "RELATIVE";
   }
 }
 
-
-function mapHostForSite(env: Env, site: SiteType): string | null {
+function mapHostForSite(domains: any, env: Env, site: SiteType): string | null {
   if (site === "MAIN") return domains[env].main;
   if (site === "SHOP") return domains[env].shop || null;
   return null;
 }
 
-// (avoid reload)
 function normalizeSelfLink(resolvedUrl: string, currentHost: string): string {
   try {
     const u = new URL(resolvedUrl);
@@ -39,16 +34,20 @@ function normalizeSelfLink(resolvedUrl: string, currentHost: string): string {
   }
 }
 
-
-export function resolveNavHref(cmsHref: string, env: Env, currentHost: string): string | null {
+export function resolveNavHref(
+  cmsHref: string,
+  domains: any,
+  env: Env,
+  currentHost: string
+): string | null {
   const site = classifySite(cmsHref);
 
   if (site === "EXTERNAL") return cmsHref;
   if (site === "RELATIVE") return cmsHref;
 
   const src = new URL(cmsHref);
-  const targetOrigin = mapHostForSite(env, site);
-  if (!targetOrigin) return null; // no mapping available
+  const targetOrigin = mapHostForSite(domains, env, site);
+  if (!targetOrigin) return null;
 
   const candidate = `${targetOrigin}${src.pathname}${src.search}${src.hash}`;
   return normalizeSelfLink(candidate, currentHost);
